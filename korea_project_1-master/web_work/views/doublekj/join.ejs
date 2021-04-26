@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+<%- include('../inc/plugin')%>
+<style>
+.loginForm {font-family: Arial, Helvetica, sans-serif;}
+.loginForm {box-sizing: border-box; width: 800px; margin: auto; justify-content: center;
+    align-items : center;}
+.loginForm * {box-sizing: border-box; width: 800px; height: 50px; margin: auto; justify-content: center;
+    align-items : center;}
+.passForm input[type=text], .passForm input[type=password] {
+  width: 80%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+.checkbox_group{
+    width: 700px;
+    position: relative
+}
+.checkbox_group input[type=checkbox]{
+  width: 6%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  resize: vertical;
+  right: 35px;
+  position: absolute;
+}
+.checkbox_group label{
+    width: 98%;
+    resize: vertical;
+    padding: 25px;
+    position: relative;
+}
+
+.btn{
+   position: relative;
+   left: 50%;
+   transform: translateX(-50%);
+   margin-bottom: 40px;
+   width: 80%;
+   height: 40px;
+   background: linear-gradient(172deg, #ffefa2, #c7b454, #ec81b7);
+   background-position: left;
+   background-size: 200%;
+   color: white;
+   font-weight: bold;
+   border: none;
+   cursor: pointer;
+   transition: 0.4s;
+   display: inline;
+}
+
+.btn2 {
+   position: relative;
+   left: 50%;
+   transform: translateX(-50%);
+   margin-bottom: 40px;
+   width: 80%;
+   height: 40px;
+   background: linear-gradient(172deg, #c5c3c1, #696965, #30292c);
+   background-position: left;
+   background-size: 200%;
+   color: white;
+   font-weight: bold;
+   border: none;
+   cursor: pointer;
+   transition: 0.4s;
+   display: inline;
+}
+
+.btn:hover,.btn2:hover {
+   background-position: right;
+}
+
+.bottomText {
+   text-align: center;
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
+<script>
+$(function(){
+    //아이디 중복체크
+    $("#user_id").focusout(function(){
+        console.log($("#user_id").val());
+        var check=$("#user_id").val();
+        $.ajax({
+            url:"/doublekj/logincheck?user_id="+check,
+            type:"GET",
+            success:function(result, status,xhr){
+                if(result=="no"){
+                    
+                }else{
+                    alert("아이디가 중복됩니다.");
+                    $("#user_id").val("");
+                    $("#user_id").focus();
+                    return;
+                }
+            }
+        });
+    });
+    $($("input[type=button]")[0]).click(function(){
+        //아이디 비어있음 체크
+        if($("#user_id").val()==""){
+            alert("아이디를 입력해주세요");
+            return;
+        }
+        //비밀번호 비어있음 체크
+        if($("#user_pass").val()==""){
+            alert("비밀번호를 입력해주세요");
+            return;
+        }
+        if($("#user_pass2").val() != $("#user_pass").val()){
+            alert("비밀번호가 다릅니다");
+            return;
+        }
+        //이름 비어있음 체크
+        if($("#user_name").val()==""){
+            alert("이름을 입력해주세요");
+            return;
+        }              
+        //전체동의 해야지만 가입가능
+        var f = document.querySelector(".loginForm");
+        var count=0;
+        for(var i=0;i<f.ch.length;i++ ){
+            if(f.ch[i].checked){
+                count++;
+            }
+        }
+        if(count<f.ch.length){
+            alert("모두 체크해야 합니다.");
+            return;
+        }
+
+        $("form").attr("action","/doublekj/join");
+        $("form").attr("method","post");
+        $("form").submit();
+    });
+});
+
+//두번째 버튼을 누르면 홈페이지로 다시 돌아가기
+$($("input[type=button]")[1]).click(function(){
+    location.href="/doublekj/main";
+});
+//전화번호 자동으로 하이픈 넣기
+$(document).on("keyup", ".tel", function() {
+    $(this).val( $(this).val().replace(/[^0-9]/g, "").replace(/(^02|^0505|^1[0-9]{3}|^0[0-9]{2})([0-9]+)?([0-9]{4})$/,"$1-$2-$3").replace("--", "-") );
+});
+// 체크박스 전체 선택
+$(function(){
+    $("#check_all").click(function(){
+        if($("#check_all").prop("checked")) {
+            $("input[type=checkbox]").prop("checked",true);
+        } else {
+            $("input[type=checkbox]").prop("checked",false);
+        }
+    }); 
+});
+</script>
+</head>
+<body>
+  <%- include('../inc/header')%>
+
+  <form class="loginForm">
+    <h2 style="font-size:30px; text-align: center; margin-top: 20px; color: antiquewhite; font-family:바탕체;">회원가입</h2>
+    <div class="passForm">
+        <input type="text" id="user_id" name="user_id" placeholder="UserID" >
+    </div>
+    <div class="passForm">
+        <input type="password" id="user_pass" name="user_pass" placeholder="Password">
+    </div>
+    <div class="passForm">
+        <input type="password" id="user_pass2" name="user_pass2" placeholder="Password">
+    </div>
+    <div class="passForm">
+        <input type="text" id="user_name" name="user_name" placeholder="Name">
+    </div>
+    <div class="passForm">
+        <input type="text" class="tel" id="user_phone" name="user_phone" placeholder="000-0000-0000" maxlength="13">
+    </div>
+    <div class="passForm">
+        <input type="text" id="user_email" name="user_email" placeholder="Email">
+    </div>
+    <div class="checkbox_group">
+
+        <input type="checkbox" id="check_all" >
+        <label for="check_all">전체 동의</label>
+        
+        <input type="checkbox" id="check_1" class="normal" name="ch">
+        <label for="check_1">개인정보 처리방침 동의</label>
+        
+        <input type="checkbox" id="check_2" class="normal" name="ch">
+        <label for="check_2">서비스 이용약관 동의</label>
+        
+        <input type="checkbox" id="check_3" class="normal" name="ch">
+        <label for="check_3">마케팅 수신 동의</label>
+        
+      </div><br>
+      <br><br><br><br><br><br><br>
+        <input type="button"  class="btn" value="회원가입">
+        <input type="button" class="btn2" value="다음에 가입할게요">
+    <div class="bottomText">
+        이미 회원가입이 되셨나요? <a href="/doublekj/loginForm">Login</a>
+    </div>
+</form>
+
+<%- include('../inc/footer')%>
+</body>
+</html>

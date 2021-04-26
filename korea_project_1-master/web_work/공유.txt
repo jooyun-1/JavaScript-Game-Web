@@ -1,0 +1,39 @@
+메인페이지
+/doublekj/main
+
+
+게시판
+/doublekj/community
+
+
+로그인
+/doublekj/login
+
+
+회원가입
+/doublekj/join
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+설치
+npm install express
+npm install ejs
+npm install serve-static
+npm install mysql
+npm install multer
+npm install express-session
